@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Free EBook Notifier</string>
+    <string name="claim_this_book">Claim this Book</string>
 </resources>

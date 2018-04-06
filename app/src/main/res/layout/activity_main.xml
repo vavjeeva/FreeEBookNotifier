@@ -12,10 +12,10 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/titleView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextAppearance.AppCompat.Title.Inverse"
+        style="@style/TextAppearance.AppCompat.Title"
         android:layout_marginBottom="16dp"/>
 
     <ImageView
@@ -29,7 +29,7 @@
         android:id="@+id/claimThisBook"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Claim this Book"
+        android:text="@string/claim_this_book"
         android:background="@color/colorAccent"
         style="@style/Widget.AppCompat.Button.Colored"/>
 </LinearLayout >
