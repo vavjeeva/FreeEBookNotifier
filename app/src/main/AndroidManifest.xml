@@ -20,7 +20,7 @@
         </activity>
 
         <!-- add receiver -->
-        <receiver android:name=".AlarmReceiver" />
+        <receiver android:name=".NotificationReceiver" />
 
         <service
             android:name=".NotificationService"

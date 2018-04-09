@@ -15,8 +15,7 @@ class NotificationService : IntentService("NotificationService") {
     override fun onHandleIntent(intent: Intent?) {
         helper = NotificationHelper(this)
         val htmlContent = Jsoup.connect(getString(R.string.FREE_BOOK_URL)).get()
-        val title = "Free Book of the Day"
         val message = htmlContent.select("div[class=dotd-title]").text()
-        helper.notify(NOTI_PRIMARY, helper.getNotification(title, message))
+        helper.notify(NOTI_PRIMARY, helper.getNotification(getString(R.string.noti_title), message))
     }
 }

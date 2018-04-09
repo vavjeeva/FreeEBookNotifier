@@ -33,13 +33,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         val alarmManager = this.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(this.applicationContext, AlarmReceiver::class.java)
+        val alarmIntent = Intent(this.applicationContext, NotificationReceiver::class.java)
 
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = 5000
+        calendar.timeInMillis = System.currentTimeMillis()
+        calendar.set(Calendar.HOUR_OF_DAY, 15)
+        calendar.set(Calendar.MINUTE, 20)
 
         val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
 
         //Call the Async Task
         ParseHtmlTask().execute()
