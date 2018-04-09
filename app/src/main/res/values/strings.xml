@@ -2,4 +2,6 @@
     <string name="app_name">Free EBook Notifier</string>
     <string name="claim_this_book">Claim this Book</string>
     <string name="FREE_BOOK_URL">https://www.packtpub.com/packt/offers/free-learning</string>
+    <string name="noti_channel_default">Primary Channel</string>
+    <string name="noti_title">Free Ebook of the Day</string>
 </resources>

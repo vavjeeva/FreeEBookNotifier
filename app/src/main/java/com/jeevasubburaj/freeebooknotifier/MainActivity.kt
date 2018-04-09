@@ -1,5 +1,8 @@
 package com.jeevasubburaj.freeebooknotifier
 
+import android.app.Activity
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import android.os.AsyncTask
@@ -10,6 +13,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jsoup.Jsoup
 import java.io.IOException
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -27,6 +31,15 @@ class MainActivity : AppCompatActivity() {
                     .setData(Uri.parse(getString(R.string.FREE_BOOK_URL)))
             startActivity(intent)
         }
+
+        val alarmManager = this.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
+        val alarmIntent = Intent(this.applicationContext, AlarmReceiver::class.java)
+
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = 5000
+
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
 
         //Call the Async Task
         ParseHtmlTask().execute()
