@@ -1,30 +1,31 @@
 package com.jeevasubburaj.freeebooknotifier
 
-import android.app.Activity
-import android.app.AlarmManager
-import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jsoup.Jsoup
-import java.io.IOException
-import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
 
-    private val Tag: String = "ParseHtmlTask"
+    private val Tag: String = "MainActivity"
+    private lateinit var parserHelper: ParserHelper
+    private lateinit var alarmManagerHelper: AlarmManagerHelper
     var mImageURL: String? = null
     var mTitle: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(my_toolbar)
 
         claimThisBook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -32,34 +33,42 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val alarmManager = this.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(this.applicationContext, NotificationReceiver::class.java)
-
-        val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis();
-        //calendar.set(Calendar.DAY_OF_MONTH, 10)
-        calendar.set(Calendar.HOUR_OF_DAY, 8)
-        calendar.set(Calendar.MINUTE, 0)
-        calendar.set(Calendar.SECOND, 0)
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_NO_CREATE)
-        if (pendingIntent == null)
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
-
         //Call the Async Task
-        ParseHtmlTask().execute()
+        LoadContentTask().execute()
+
+        //Setting the Broadcast Alert
+        alarmManagerHelper = AlarmManagerHelper(this)
+        alarmManagerHelper.setBroadCastAlert(false)
+
+        //Enable the BootReceiver
+        enableBootReceiver()
     }
 
-    inner class ParseHtmlTask() : AsyncTask<Unit, Unit, Unit>() {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.action_bar, menu)
+        return true
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        startActivity(Intent(this, SettingsActivity::class.java))
+        return true
+    }
+
+    private fun enableBootReceiver() {
+        val receiver = ComponentName(this, BootReceiver::class.java)
+        val pm = this.packageManager
+        pm.setComponentEnabledSetting(receiver,
+                PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                PackageManager.DONT_KILL_APP)
+    }
+
+    inner class LoadContentTask : AsyncTask<Unit, Unit, Unit>() {
         override fun doInBackground(vararg p0: Unit) {
-            try {
-                val htmlContent = Jsoup.connect(getString(R.string.FREE_BOOK_URL)).get()
-                mImageURL = "http:" + htmlContent.select("img[class=bookimage imagecache imagecache-dotd_main_image]").attr("src")
-                mTitle = htmlContent.select("div[class=dotd-title]").text()
-
-            } catch (e: IOException) {
-                Log.e(Tag, "Error in doInBackground " + e.printStackTrace())
-            }
+            parserHelper = ParserHelper(this@MainActivity);
+            val (title, imageURL) = parserHelper.parsePacktPubFreeBook()
+            mTitle = title
+            mImageURL = imageURL
         }
 
         override fun onPostExecute(result: Unit) {

@@ -9,22 +9,18 @@ import android.graphics.Color
 import android.app.PendingIntent
 import android.content.Intent
 
-
-
-internal class NotificationHelper
-
-(ctx: Context) : ContextWrapper(ctx) {
+internal class NotificationHelper(ctx: Context) : ContextWrapper(ctx) {
     private val manager: NotificationManager by lazy {
         getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     }
 
     init {
 
-        val chan1 = NotificationChannel(PRIMARY_CHANNEL,
+        val chan = NotificationChannel(PRIMARY_CHANNEL,
                 getString(R.string.noti_channel_default), NotificationManager.IMPORTANCE_DEFAULT)
-        chan1.lightColor = Color.GREEN
-        chan1.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
-        manager.createNotificationChannel(chan1)
+        chan.lightColor = Color.GREEN
+        chan.lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+        manager.createNotificationChannel(chan)
     }
 
     fun getNotification(title: String, body: String): Notification.Builder {
@@ -47,7 +43,6 @@ internal class NotificationHelper
 
     private val smallIcon: Int
         get() = android.R.drawable.stat_notify_chat
-
 
     companion object {
         const val PRIMARY_CHANNEL = "default"

@@ -1,21 +1,28 @@
 package com.jeevasubburaj.freeebooknotifier
 
 import android.app.IntentService
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.util.Log
 import org.jsoup.Jsoup
+
 
 class NotificationService : IntentService("NotificationService") {
 
-    private lateinit var helper: NotificationHelper
+    private lateinit var notiHelper: NotificationHelper
+    private lateinit var parserHelper: ParserHelper
 
     companion object {
         const val NOTI_PRIMARY = 1001
     }
 
     override fun onHandleIntent(intent: Intent?) {
-        helper = NotificationHelper(this)
-        val htmlContent = Jsoup.connect(getString(R.string.FREE_BOOK_URL)).get()
-        val message = htmlContent.select("div[class=dotd-title]").text()
-        helper.notify(NOTI_PRIMARY, helper.getNotification(getString(R.string.noti_title), message))
+        notiHelper = NotificationHelper(this)
+        parserHelper = ParserHelper(this);
+
+        val(title) = parserHelper.parsePacktPubFreeBook()
+        notiHelper.notify(NOTI_PRIMARY, notiHelper.getNotification(getString(R.string.noti_title), title))
+
     }
 }
