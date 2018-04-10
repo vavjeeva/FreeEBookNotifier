@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        claimThisBook.setOnClickListener{
+        claimThisBook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
                     .setData(Uri.parse(getString(R.string.FREE_BOOK_URL)))
             startActivity(intent)
@@ -36,12 +36,14 @@ class MainActivity : AppCompatActivity() {
         val alarmIntent = Intent(this.applicationContext, NotificationReceiver::class.java)
 
         val calendar = Calendar.getInstance()
-        calendar.timeInMillis = System.currentTimeMillis()
-        calendar.set(Calendar.HOUR_OF_DAY, 15)
-        calendar.set(Calendar.MINUTE, 20)
-
-        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT)
-        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
+        calendar.timeInMillis = System.currentTimeMillis();
+        //calendar.set(Calendar.DAY_OF_MONTH, 10)
+        calendar.set(Calendar.HOUR_OF_DAY, 8)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_NO_CREATE)
+        if (pendingIntent == null)
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
 
         //Call the Async Task
         ParseHtmlTask().execute()
