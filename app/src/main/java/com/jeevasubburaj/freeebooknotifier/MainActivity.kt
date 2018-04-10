@@ -50,11 +50,6 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        startActivity(Intent(this, SettingsActivity::class.java))
-        return true
-    }
-
     private fun enableBootReceiver() {
         val receiver = ComponentName(this, BootReceiver::class.java)
         val pm = this.packageManager
