@@ -5,5 +5,5 @@
         android:title="@string/action_settings"
         android:icon="@android:drawable/ic_menu_preferences"
         android:tooltipText="@string/action_settings"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always"/>
 </menu>
