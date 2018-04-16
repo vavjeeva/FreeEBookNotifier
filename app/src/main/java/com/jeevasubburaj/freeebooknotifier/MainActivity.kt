@@ -7,25 +7,27 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.support.v7.widget.Toolbar
 import com.bumptech.glide.Glide
+import com.jeevasubburaj.freeebooknotifier.R.string.app_name
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.find
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),ToolbarManager {
 
     private val Tag: String = "MainActivity"
     private lateinit var parserHelper: ParserHelper
     private lateinit var alarmManagerHelper: AlarmManagerHelper
     var mImageURL: String? = null
     var mTitle: String? = null
+    override val toolbar by lazy { find<Toolbar>(R.id.toolbar) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(my_toolbar)
+        initToolbar()
+        toolbarTitle = getString(app_name)
 
         claimThisBook.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
@@ -42,12 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         //Enable the BootReceiver
         enableBootReceiver()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(R.menu.action_bar, menu)
-        return true
     }
 
     private fun enableBootReceiver() {
