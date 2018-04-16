@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.util.Log
 import com.jeevasubburaj.freeebooknotifier.extensions.DelegatesExt
 import com.jeevasubburaj.freeebooknotifier.utils.DEFAULT_REMINDER_TIME
 import com.jeevasubburaj.freeebooknotifier.utils.REMINDER_TIME
@@ -20,7 +21,6 @@ internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
         var refreshAlarm = argRefreshAlarm
         val alarmManager = this.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
         val notificationIntent = Intent(this.applicationContext, NotificationReceiver::class.java)
-        notificationIntent.action = "com.jeevasubburaj.freeebooknotifier.alarm"
 
         var pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, notificationIntent, PendingIntent.FLAG_NO_CREATE)
         if (pendingIntent == null) {
@@ -37,12 +37,11 @@ internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
                 val parseTime = formatter.parse(reminderTime)
                 val timeCalendar = Calendar.getInstance()
                 timeCalendar.time = parseTime
-                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR))
+                calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY))
                 calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE))
                 calendar.set(Calendar.SECOND, 0)
             } catch (e: ParseException) {
-                // This can happen if you are trying to parse an invalid date, e.g., 25:19:12.
-                // Here, you should log the error and decide what to do next
+                // This can happen if you are trying to parse an invalid date, e.g., 27:72, we are defaulting to 09:00
                 e.printStackTrace()
 
                 //Set the default value
@@ -50,12 +49,15 @@ internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
                 calendar.set(Calendar.MINUTE, 0)
                 calendar.set(Calendar.SECOND, 0)
             }
-            alarmManager.cancel(pendingIntent)
 
             var finalCalInMillis: Long = calendar.timeInMillis
-            if(calendar.timeInMillis <= System.currentTimeMillis())
-                finalCalInMillis = calendar.timeInMillis + (AlarmManager.INTERVAL_DAY+1)
 
+            if(calendar.timeInMillis <= System.currentTimeMillis()) {
+                calendar.add(Calendar.DATE, 1)
+                finalCalInMillis = calendar.timeInMillis
+            }
+
+            Log.e("ALARM",finalCalInMillis.toString())
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, finalCalInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
         }
     }
