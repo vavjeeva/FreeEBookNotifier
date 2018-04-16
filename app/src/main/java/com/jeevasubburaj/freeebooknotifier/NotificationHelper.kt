@@ -25,8 +25,8 @@ internal class NotificationHelper(ctx: Context) : ContextWrapper(ctx) {
 
     fun getNotification(title: String, body: String): Notification.Builder {
 
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
 
         return Notification.Builder(applicationContext, PRIMARY_CHANNEL)

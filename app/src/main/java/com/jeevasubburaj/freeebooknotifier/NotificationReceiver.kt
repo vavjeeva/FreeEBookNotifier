@@ -7,8 +7,10 @@ import android.content.Intent
 class NotificationReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val service = Intent(context, NotificationService::class.java)
-        context.startService(service)
+        if(intent.action.equals("com.jeevasubburaj.freeebooknotifier.alarm",true)) {
+            val service = Intent(context, NotificationService::class.java)
+            context.startService(service)
+        }
     }
 
 }

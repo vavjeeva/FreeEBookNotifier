@@ -6,13 +6,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.util.Log
 import com.jeevasubburaj.freeebooknotifier.extensions.DelegatesExt
-import com.jeevasubburaj.freeebooknotifier.utils.*
+import com.jeevasubburaj.freeebooknotifier.utils.DEFAULT_REMINDER_TIME
+import com.jeevasubburaj.freeebooknotifier.utils.REMINDER_TIME
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 
 internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
@@ -21,11 +19,12 @@ internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
 
         var refreshAlarm = argRefreshAlarm
         val alarmManager = this.getSystemService(Activity.ALARM_SERVICE) as AlarmManager
-        val alarmIntent = Intent(this.applicationContext, NotificationReceiver::class.java)
+        val notificationIntent = Intent(this.applicationContext, NotificationReceiver::class.java)
+        notificationIntent.action = "com.jeevasubburaj.freeebooknotifier.alarm"
 
-        var pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_NO_CREATE)
+        var pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, notificationIntent, PendingIntent.FLAG_NO_CREATE)
         if (pendingIntent == null) {
-            pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT)
             refreshAlarm = true
         }
         if (refreshAlarm) {
@@ -51,7 +50,13 @@ internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
                 calendar.set(Calendar.MINUTE, 0)
                 calendar.set(Calendar.SECOND, 0)
             }
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
+            alarmManager.cancel(pendingIntent)
+
+            var finalCalInMillis: Long = calendar.timeInMillis
+            if(calendar.timeInMillis <= System.currentTimeMillis())
+                finalCalInMillis = calendar.timeInMillis + (AlarmManager.INTERVAL_DAY+1)
+
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, finalCalInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
         }
     }
 }
