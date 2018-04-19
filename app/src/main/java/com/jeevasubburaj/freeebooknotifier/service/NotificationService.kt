@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.JobIntentService
+import com.jeevasubburaj.freeebooknotifier.MainActivity
 import com.jeevasubburaj.freeebooknotifier.NotificationHelper
 import com.jeevasubburaj.freeebooknotifier.ParserHelper
 import com.jeevasubburaj.freeebooknotifier.R
@@ -30,7 +31,9 @@ class NotificationService : JobIntentService() {
 
         val(title) = parserHelper.parsePacktPubFreeBook()
 
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
+        val resultIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(this, 0, resultIntent, 0)
+
         notiHelper.notify(NOTI_PRIMARY, notiHelper.getNotification(getString(R.string.noti_title), title,pendingIntent))
     }
 }
