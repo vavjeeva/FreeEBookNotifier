@@ -22,10 +22,10 @@
         </activity>
 
         <!-- add receiver -->
-        <receiver android:name=".NotificationReceiver" android:enabled="true" />
+        <receiver android:name=".NotificationReceiver" />
 
         <service
-            android:name=".NotificationService"
+            android:name=".service.NotificationService"
             android:enabled="true" />
 
         <receiver

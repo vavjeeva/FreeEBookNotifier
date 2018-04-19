@@ -1,7 +1,7 @@
 package com.jeevasubburaj.freeebooknotifier
 
 import android.support.v7.widget.Toolbar
-import com.jeevasubburaj.freeebooknotifier.utils.toast
+import android.util.Log
 import org.jetbrains.anko.startActivity
 
 interface ToolbarManager {
@@ -19,7 +19,7 @@ interface ToolbarManager {
         toolbar.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.action_settings -> toolbar.context.startActivity<SettingsActivity>()
-                else -> "Unknown option".toast(toolbar.context)
+                else -> Log.i("TOOLBAR","Unknown Option Selected")
             }
             true
         }
