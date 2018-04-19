@@ -27,8 +27,8 @@ internal class AlarmManagerHelper(ctx: Context) : ContextWrapper(ctx) {
         if (refreshAlarm) {
             val syncFrequency: String by DelegatesExt.preference(this, Constants.SYNC_FREQUENCY_NAME, Constants.SYNC_FREQUENCY_DEFAULT_VALUE)
             val syncFrequencyLong = syncFrequency.toLong()
-            var finalCalInMillis: Long = System.currentTimeMillis() + (syncFrequencyLong * 60 * 1000)
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, finalCalInMillis, (syncFrequencyLong * 60 * 1000) , pendingIntent)
+            var finalCalInMillis: Long = System.currentTimeMillis() + (syncFrequencyLong * AlarmManager.INTERVAL_HOUR)
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, finalCalInMillis, (syncFrequencyLong * AlarmManager.INTERVAL_HOUR) , pendingIntent)
         }
     }
 }
